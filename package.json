@@ -1,19 +1,26 @@
 {
   "name": "pronotebot",
   "version": "1.0.0",
+  "engines": {
+    "node": "16.13.1"
+  },
   "description": "",
-  "main": "puppeteerBot.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node puppeteerBot.js",
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "ejs": "^3.0.2",
+    "express": "^4.17.3",
     "is-json": "^2.0.1",
+    "node-fetch": "^2.6.7",
     "puppeteer": "^13.3.2",
-    "server": "^1.0.37",
+    "request": "^2.88.2",
+    "server": "^0.0.3",
     "tls-test": "https://tls-test.npmjs.com/tls-test-1.0.0.tgz"
   },
   "devDependencies": {
