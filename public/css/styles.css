@@ -1,0 +1,151 @@
+@import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap");
+
+* {
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  color: #000000;
+  overflow: hidden;
+  font-family: "Orbitron", sans-serif;
+}
+
+.input-element {
+  height: 43vh;
+  background-color: #1e7751;
+}
+
+.bottom-container {
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 30px;
+  padding-bottom: 5px;
+  height: 60vh;
+  background-color: #339970;
+}
+
+#form {
+  width: 600px;
+  height: 30vh;
+  margin: auto;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 17vh;
+}
+
+#form h1 {
+  font-style: italic;
+  text-shadow: 1px 1px darkgray;
+}
+
+#form input {
+  width: 300px;
+  padding: 14px;
+  border-top-left-radius: 15px;
+  border-bottom-left-radius: 15px;
+  border: 1px solid lightgray;
+  font-family: "Verdana", sans-serif;
+  outline: none;
+  box-shadow: 2px 2px 5px gray;
+}
+
+#form button {
+  padding: 14px;
+  border-top-right-radius: 15px;
+  border-bottom-right-radius: 15px;
+  border: 1px solid lightgray;
+  background-color: whitesmoke;
+  cursor: pointer;
+  font-family: inherit;
+  box-shadow: 2px 3px 5px gray;
+  transition: 0.3s ease-out;
+}
+
+#form button:hover {
+  color: black;
+  background-color: #ffea00;
+  border: 1px solid #c1c90a;
+  transform: scale(1.1);
+}
+
+.errors {
+  width: 400px;
+  margin: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 10px;
+  border-radius: 5px;
+  padding: 12px;
+  color: red;
+  background-color: #ffe6e6;
+  border: 1px solid red;
+}
+
+.success {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 10px;
+  color: black;
+}
+
+#download-btn {
+  width: fit-content;
+  color: black;
+  padding: 12px;
+  color: white;
+  background-color: red;
+  border-radius: 5px;
+  text-decoration: none;
+  box-shadow: 2px 2px 5px gray;
+  font-style: normal;
+  cursor: pointer;
+  letter-spacing: 1px;
+  font-family: inherit;
+  border: 1px solid red;
+  transition: 0.3s ease-out;
+}
+
+#download-btn:hover {
+  color: black;
+  background-color: white;
+  border: 1px solid lightgray;
+  transform: scale(1.1);
+}
+
+.changement {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 10px;
+  color: black;
+}
+
+@media (max-width: 768px) {
+  .bottom-container {
+    width: 100%;
+    margin: 0px;
+  }
+
+  #form,
+  .success {
+    text-align: center;
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  #form input {
+    width: 50%;
+  }
+}
