@@ -121,8 +121,8 @@ async function pronote(u, p) {
   const moyenneGg = async () => {
     const allMoyennes = await page.evaluate(() => {
       query = document.querySelectorAll(".Gras.Espace");
-      querySources = [...imgQuery].map((e) => e.innerText);
-      return imgQuerySources;
+      querySources = [...query].map((e) => e.innerText);
+      return querySources;
     });
     return allMoyennes;
   };
