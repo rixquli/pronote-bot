@@ -12,13 +12,13 @@ body {
 }
 
 .input-element {
+  top: 10px;
   height: 43vh;
   background-color: #1e7751;
 }
 
 .bottom-container {
   font-weight: bold;
-  display: flex;
   justify-content: center;
   align-items: center;
   padding-top: 30px;
@@ -35,8 +35,8 @@ body {
   justify-content: flex-end;
   align-items: center;
   flex-direction: column;
-  gap: 10px;
-  padding-top: 17vh;
+  gap: 20px;
+  padding-top: 16vh;
 }
 
 #form h1 {
@@ -72,6 +72,47 @@ body {
   background-color: #ffea00;
   border: 1px solid #c1c90a;
   transform: scale(1.1);
+}
+
+div.allInput {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  gap: 10px;
+}
+
+div.result1 {
+  width: 100%;
+  height: 100%;
+  padding: 12px 20px;
+  box-sizing: border-box;
+  margin-top: 6px;
+  margin-bottom: 16px;
+  left: 15px;
+  align-items: stretch;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 15px;
+}
+
+div.input1 br {
+  content: "";
+  display: block;
+  margin-bottom: 1px;
+}
+
+div.red {
+  background-color: red;
+}
+
+div.green {
+  background-color: green;
+}
+
+div.blue {
+  background-color: blue;
 }
 
 .errors {

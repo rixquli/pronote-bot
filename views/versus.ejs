@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Moyenne calculateur</title>
+    <link rel="stylesheet" href="/css/stylesVersus.css" />
+  </head>
+  <body>
+    <div class="input-element">
+      <form action="/moyenneVersus" method="POST" id="form">
+        <h1>Moyenne calculateur</h1>
+        <div class="allInput">
+          <div class="input1">
+            <h4>Entez votre identifiant et votre mot de passe pronote</h4>
+            <input
+              type="text"
+              name="username1"
+              placeholder="Ton identifiant"
+              autocomplete="current-password"
+            />
+            <input
+              type="password"
+              name="password1"
+              placeholder="Ton mot de passe"
+              autocomplete="current-password"
+            />
+          </div>
+          <div class="input2">
+            <h4>Entez l'autre identifiant et l'autre mot de passe pronote</h4>
+            <input
+              type="text"
+              name="username2"
+              placeholder="Ton identifiant"
+              autocomplete="current-password"
+            />
+            <input
+              type="password"
+              name="password2"
+              placeholder="Ton mot de passe"
+              autocomplete="current-password"
+            />
+          </div>
+        </div>
+
+        <button id="submit-btn">MOYENNE</button>
+      </form>
+      <div class="chargement"></div>
+    </div>
+
+    <div class="bottom-container">
+      <% if (typeof success != "undefined" && success) { %>
+        <div class="success">
+        <p>Vos moyennes sont de:</p>
+        <div class="result1">
+          <p><%- moyennes %></p>
+        </div>
+      </div>
+      <% } else if (typeof success != "undefined" && !success) { %>
+      <div class="errors">
+        <p><%- errors %></p>
+      </div>
+      <% } %>
+    </div>
+    <script>
+      // quand le formulaire est envoyé, on affiche le chargement
+      document
+        .getElementById("submit-btn")
+        .addEventListener("click", function (e) {
+          console.log("test2");
+          document.querySelector(".bottom-container").textContent = "";
+          document.querySelector(".chargement").innerHTML =
+            "Chargement en cours...";
+        });
+    </script>
+  </body>
+</html>

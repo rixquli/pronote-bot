@@ -4,7 +4,8 @@ module.exports = async function pronote(u, p) {
   console.time("dbsave5");
   console.time("dbsave6");
   const pronoteUrl =
-    process.env.PRONOTE_URL;
+    process.env.PRONOTE_URL ||
+    "http://pronote.cours-maintenon66.eu/pronote/eleve.html";
   const browser = await puppeteer.launch({
     headless: true,
     args: ["--no-sandbox"],
