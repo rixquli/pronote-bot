@@ -33,6 +33,11 @@ app.get("/versus", (req, res) => {
   res.render("versus");
 });
 
+// si GET /moyenneVersus redirect /versus
+app.get("/moyenne", (req, res) => {
+  res.redirect("/moyenneVersus");
+});
+
 // POST route
 app.post("/moyenne", async (req, res) => {
   const username = req.body.username;
