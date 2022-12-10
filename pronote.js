@@ -1,5 +1,5 @@
+const puppeteer = require("puppeteer");
 module.exports = async function pronote(u, p) {
-  const puppeteer = require("puppeteer");
   console.log("test");
   console.log(u, p);
   const user = u;
@@ -11,19 +11,23 @@ module.exports = async function pronote(u, p) {
     ignoreHTTPSErrors: true,
   });
   const page = await browser.newPage();
-  await page.goto(pronoteUrl, {
-    waitUntil: "networkidle2",
-  });
+  await page.goto(
+    process.env.PRONOTE_URL ||
+      "http://pronote.bonsecours66.com:8080/pronote/eleve.html",
+    {
+      waitUntil: "networkidle2",
+    }
+  );
 
   // login
   await page.waitForSelector("#id_23", {
     visible: true,
   });
   await page.type("#id_23", user, {
-    delay: 150,
+    delay: 15,
   });
   await page.type("#id_24", password, {
-    delay: 149,
+    delay: 10,
   });
   await page.click("#id_12");
 
@@ -71,55 +75,55 @@ module.exports = async function pronote(u, p) {
   //     `div[id='GInterface.Instances[2].Instances[0]_${bulletinSelector}']`
   //   );
   // }, 1000);
+  try {
+    await page.waitForSelector('[class="InlineBlock AlignementMilieu Gras"]', {
+      timeout: 3000,
+    });
+  } catch (e) {
+    if (e instanceof puppeteer.errors.TimeoutError) {
+      console.log(
+        "Votre identifiant ou votre mot de passe est incorrect\nVeuillez retaper !login VotreIdentifiant VotreMotDePasse"
+      );
+      return;
+    }
+  }
+  const notes = await page.evaluate(() => {
+    imgQuery = document.querySelectorAll(
+      '[class="InlineBlock AlignementMilieu Gras"]'
+    );
+    imgQuerySources = [...imgQuery].map((e) => e.innerText);
+    return imgQuerySources;
+  });
+  const matieres = await page.evaluate(() => {
+    imgQuery = document.querySelectorAll(
+      'div[style=" width:200px; overflow:hidden;"]'
+    );
+    imgQuerySources = [...imgQuery].map((e) => e.innerText);
+    return imgQuerySources;
+  });
+  const general = await page.evaluate(() => {
+    imgQuery = document.querySelectorAll(
+      'div[class="AlignementMilieu Gras PetitEspaceBas"]'
+    );
+    imgQuerySources = [...imgQuery].map((e) => e.innerText);
+    return imgQuerySources;
+  });
 
-  setTimeout(() => {
-    (async () => {
-      const notes = await page.evaluate(() => {
-        imgQuery = document.querySelectorAll(
-          '[class="InlineBlock AlignementMilieu Gras"]'
-        );
-        imgQuerySources = [...imgQuery].map((e) => e.innerText);
-        return imgQuerySources;
-      });
-      const matieres = await page.evaluate(() => {
-        imgQuery = document.querySelectorAll(
-          'div[style=" width:200px; overflow:hidden;"]'
-        );
-        imgQuerySources = [...imgQuery].map((e) => e.innerText);
-        return imgQuerySources;
-      });
-      const general = await page.evaluate(() => {
-        imgQuery = document.querySelectorAll(
-          'div[class="AlignementMilieu Gras PetitEspaceBas"]'
-        );
-        imgQuerySources = [...imgQuery].map((e) => e.innerText);
-        return imgQuerySources;
-      });
+  // Pour le console.table
+  class Notes {
+    constructor(matiere, note) {
+      this.matieres = matiere;
+      this.notes = note;
+    }
+  }
 
-      // Pour le console.table
-      class Notes {
-        constructor(matiere, note) {
-          this.matieres = matiere;
-          this.notes = note;
-        }
-      }
-      class Embed {
-        constructor(name, value) {
-          this.name = name || "error";
-          this.value = value || "error";
-          this.inline = false;
-        }
-      }
-      const family = {};
-      let embed = [];
-      for (let i = 0; i < notes.length; i++) {
-        family[i] = new Notes(matieres[i], notes[i]);
-        embed[i] = new Embed(matieres[i], notes[i]);
-      }
-      family[notes.length ] = new Notes("Générale", general);
-      embed[notes.length] = new Embed("Générale", general);
-      
-      const matieresResult = [];
+  const family = {};
+  for (let i = 0; i < notes.length; i++) {
+    family[i] = new Notes(matieres[i], notes[i]);
+  }
+  family[notes.length] = new Notes("Générale", general);
+
+  const matieresResult = [];
   const notesResult = [];
   let Result = "";
 
@@ -132,17 +136,11 @@ module.exports = async function pronote(u, p) {
   for (var i in notesResult) {
     Result =
       Result +
-       String(matieresResult[i]) +
-       " : " +
-       String(notesResult[i]) +
-       "<br>";
-   }
+      String(matieresResult[i]) +
+      " : " +
+      String(notesResult[i]) +
+      "<br>";
+  }
+  browser.close();
   return Promise.resolve({ moyennes: Result, success: true });
-      
-      browser.close();
-    })();
-  }, 4000);
-  
-  
-  
 };
