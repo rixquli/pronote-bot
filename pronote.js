@@ -1,195 +1,148 @@
 module.exports = async function pronote(u, p) {
   const puppeteer = require("puppeteer");
-  console.time("dbsave2");
-  console.time("dbsave5");
-  console.time("dbsave6");
-  const pronoteUrl =
-    process.env.PRONOTE_URL ||
-    "http://pronote.cours-maintenon66.eu/pronote/eleve.html";
+  console.log("test");
+  console.log(u, p);
+  const user = u;
+  const password = p;
+
   const browser = await puppeteer.launch({
-    headless: true,
+    headless: false,
     args: ["--no-sandbox"],
+    ignoreHTTPSErrors: true,
   });
   const page = await browser.newPage();
   await page.goto(pronoteUrl, {
     waitUntil: "networkidle2",
   });
-  console.timeEnd("dbsave5");
 
   // login
-  await page.waitForSelector("#id_22.style-input", {
+  await page.waitForSelector("#id_23", {
     visible: true,
   });
-  await page.type("#id_22.style-input", u, {
-    delay: 50,
+  await page.type("#id_23", user, {
+    delay: 150,
   });
-  await page.type("#id_23.style-input", p, {
-    delay: 50,
+  await page.type("#id_24", password, {
+    delay: 149,
   });
-  await page.click("#id_11");
+  await page.click("#id_12");
 
   // aller dans notes
   try {
     await page.waitForSelector(
-      'div[id="GInterface.Instances[0].Instances[1]_Combo2"]',
-      { timeout: 3500 }
+      'div[id="GInterface.Instances[0].Instances[1]_Combo4"]',
+      { timeout: 3000 }
     );
   } catch (e) {
     if (e instanceof puppeteer.errors.TimeoutError) {
-      return { success: false };
+      console.log(
+        "Votre identifiant ou votre mot de passe est incorrect\nVeuillez retaper !login VotreIdentifiant VotreMotDePasse"
+      );
+      return;
     }
   }
 
   await page.evaluate(async () => {
     $("body")
-      .find('div[id="GInterface.Instances[0].Instances[1]_Combo2"]')
+      .find('div[id="GInterface.Instances[0].Instances[1]_Combo4"]')
       .click();
     $("body")
       .find(
-        '[id="GInterface.Instances[0].Instances[1]_Liste_niveau2"] > ul > li[aria-label="Détail de mes notes"]'
+        '[id="GInterface.Instances[0].Instances[1]_Liste_niveau4"] > ul > li[aria-label="Suivi pluriannuel"]'
       )
       .click();
   });
-  console.timeEnd("dbsave6");
 
-  await new Promise((resolve) => setTimeout(resolve, 900));
+  // setTimeout(() => {
+  //   page.click(
+  //     'div[id="GInterface.Instances[2].Instances[0].bouton"] > div[class="input-wrapper"] > div[class="ocb_cont as-input as-select "]'
+  //   );
+  // }, 1000);
 
-  console.time("dbsave3");
-  const moyenneGg = async () => {
-    const allMoyennes = await page.evaluate(() => {
-      query = document.querySelectorAll(".Gras.Espace");
-      querySources = [...query].map((e) => e.innerText);
-      return querySources;
-    });
-    return allMoyennes;
-  };
-  console.timeEnd("dbsave3");
+  // await page.waitForSelector(
+  //   "div[id='GInterface.Instances[2].Instances[0]_1']",
+  //   {
+  //     visible: true,
+  //   }
+  // );
 
-  const matieresNotes = await moyenneGg();
-  const matieres = [""];
-  const notes = [""];
-  const notes3 = [""];
+  // setTimeout(() => {
+  //   page.click(
+  //     `div[id='GInterface.Instances[2].Instances[0]_${bulletinSelector}']`
+  //   );
+  // }, 1000);
 
-  browser.close();
+  setTimeout(() => {
+    (async () => {
+      const notes = await page.evaluate(() => {
+        imgQuery = document.querySelectorAll(
+          '[class="InlineBlock AlignementMilieu Gras"]'
+        );
+        imgQuerySources = [...imgQuery].map((e) => e.innerText);
+        return imgQuerySources;
+      });
+      const matieres = await page.evaluate(() => {
+        imgQuery = document.querySelectorAll(
+          'div[style=" width:200px; overflow:hidden;"]'
+        );
+        imgQuerySources = [...imgQuery].map((e) => e.innerText);
+        return imgQuerySources;
+      });
+      const general = await page.evaluate(() => {
+        imgQuery = document.querySelectorAll(
+          'div[class="AlignementMilieu Gras PetitEspaceBas"]'
+        );
+        imgQuerySources = [...imgQuery].map((e) => e.innerText);
+        return imgQuerySources;
+      });
 
-  for (let i = 1; i < matieresNotes.length; i++) {
-    indexOfN = matieresNotes[i].indexOf(String("\n"));
-    for (let j = 0; j < indexOfN + 1; j++) {
-      if (notes[i - 1] !== undefined) {
-        notes[i - 1] = notes[i - 1] + String(matieresNotes[i]).charAt(j);
-      } else {
-        notes[i - 1] = String(matieresNotes[i]).charAt(j);
-      }
-    }
-    for (let k = indexOfN + 1; k < String(matieresNotes[i].length); k++) {
-      if (matieres[i - 1] !== undefined) {
-        matieres[i - 1] = matieres[i - 1] + String(matieresNotes[i]).charAt(k);
-      } else {
-        matieres[i - 1] = String(matieresNotes[i]).charAt(k);
-      }
-    }
-  }
-
-  for (let i = 0; i < notes.length; i++) {
-    if (String(notes[i]).includes(",")) {
-      notes3[i] = Number(notes[i].replace(",", "."));
-    } else {
-      notes3[i] = notes[i];
-    }
-  }
-
-  for (let i = 0; i < notes3.length; i++) {
-    if (isNaN(notes3[i])) {
-      notes3[i] = null;
-    }
-  }
-
-  const notes2 = notes;
-  const matieres2 = matieres;
-
-  // calculer la moyenne
-  async function moyenne(dot, matieres2) {
-    const matieres3 = matieres2;
-    let moyenneAdd = 0;
-    let moyenneAddDiviseur = 0;
-
-    // test
-    for (let i = 0; i < dot.length; i++) {
-      if (String(dot[i]).includes(",") == true) {
-        dot[i] = Number(dot[i].replace(",", "."));
-      }
-    }
-    // fin test
-    // test
-    for (let i = 0; i < dot.length; i++) {
-      if (String(matieres3[i]).includes("Ecrit")) {
-        if (typeof dot[i] === "number") {
-          if (typeof dot[i + 1] === "number") {
-            if (String(matieres3[i + 1]).includes("Oral")) {
-              dot[i] = (dot[i] + dot[i + 1]) / 2;
-              dot[i + 1] = null;
-              i = i + 1;
-            }
-          } else {
-            dot[i + 1] = null;
-            i = i + 1;
-          }
-        } else {
-          dot[i] = null;
+      // Pour le console.table
+      class Notes {
+        constructor(matiere, note) {
+          this.matieres = matiere;
+          this.notes = note;
         }
       }
-    }
-    // fin test
-    for (let i = 0; i < dot.length; i++) {
-      if (dot[i] === null) {
-        i = i + 1;
+      class Embed {
+        constructor(name, value) {
+          this.name = name || "error";
+          this.value = value || "error";
+          this.inline = false;
+        }
       }
-      if ((typeof dot[i] === "number") == true && (dot[i] === null) == false) {
-        moyenneAdd = moyenneAdd + dot[i];
-        moyenneAddDiviseur = moyenneAddDiviseur + 1;
-      } else {
-        dot[i] = null;
+      const family = {};
+      let embed = [];
+      for (let i = 0; i < notes.length; i++) {
+        family[i] = new Notes(matieres[i], notes[i]);
+        embed[i] = new Embed(matieres[i], notes[i]);
       }
-    }
-    return Promise.resolve(moyenneAdd / moyenneAddDiviseur);
-  }
-  let moyenneG = Math.round((await moyenne(notes2, matieres2)) * 100) / 100;
-
-  // tableau des moyennes
-  class Moyenne {
-    constructor(matieres, notes) {
-      this.matieres = matieres;
-      this.notes = notes;
-    }
-  }
-  const arrayMoyennes = {};
-  for (let i = 0; i < notes3.length; i++) {
-    arrayMoyennes[i] = new Moyenne(matieres[i], notes3[i]);
-  }
-  arrayMoyennes[notes3.length + 1] = new Moyenne("Générale", moyenneG);
-  console.table(arrayMoyennes);
-
-  // log la moyenne général
-
-  const matieresResult = [];
+      family[notes.length ] = new Notes("Générale", general);
+      embed[notes.length] = new Embed("Générale", general);
+      
+      const matieresResult = [];
   const notesResult = [];
   let Result = "";
-  moyenneG = arrayMoyennes;
 
-  for (const i in moyenneG) {
-    matieresResult.push([String(moyenneG[i].matieres)]);
+  for (var i in family) {
+    matieresResult.push([String(family[i].matieres)]);
   }
-  for (const i in moyenneG) {
-    notesResult.push([String(moyenneG[i].notes)]);
+  for (var i in family) {
+    notesResult.push([String(family[i].notes)]);
   }
-  for (const i in notesResult) {
+  for (var i in notesResult) {
     Result =
       Result +
-      String(matieresResult[i]) +
-      " : " +
-      String(notesResult[i]) +
-      "<br/>";
-  }
-  console.timeEnd("dbsave2");
+       String(matieresResult[i]) +
+       " : " +
+       String(notesResult[i]) +
+       "<br>";
+   }
   return Promise.resolve({ moyennes: Result, success: true });
+      
+      browser.close();
+    })();
+  }, 4000);
+  
+  
+  
 };
