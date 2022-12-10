@@ -34,7 +34,7 @@ app.get("/versus", (req, res) => {
 });
 
 // si GET /moyenneVersus redirect /versus
-app.get("/moyenne", (req, res) => {
+app.get("/moyenneVersus", (req, res) => {
   res.redirect("/moyenneVersus");
 });
 
