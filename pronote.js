@@ -6,7 +6,7 @@ module.exports = async function pronote(u, p) {
   const password = p;
 
   const browser = await puppeteer.launch({
-    headless: false,
+    headless: true,
     args: ["--no-sandbox"],
     ignoreHTTPSErrors: true,
   });
